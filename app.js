@@ -78,6 +78,7 @@ app.get("/listings/new",(req,res)=>{
     res.render("listings/new.ejs");
 })
 
+//Try Catch
 // app.post("/listings", async (req,res,next)=>{
 //     try{
 //         let listing = req.body.listing;
@@ -89,16 +90,62 @@ app.get("/listings/new",(req,res)=>{
 //     }
 // })
 
+
+//WrapAsync
+// app.post("/listings", wrapAsync( async (req,res,next)=>{
+//         let listing = req.body.listing;
+//         let newListing = new Listing(listing);
+//         await newListing.save();
+//         res.redirect("/listings");
+// }));
+
+//Express Error
+// app.post("/listings", wrapAsync( async (req,res,next)=>{
+//         let listing = req.body.listing;
+//         if(!listing){
+//             throw new ExpressError(400,"Send valid data for listing");
+//         }
+//         let newListing = new Listing(listing);
+//         await newListing.save();
+//         res.redirect("/listings");
+// }));
+
+
+// app.post("/listings", wrapAsync( async (req,res,next)=>{
+//         let listing = req.body.listing;
+//         if(!listing){
+//             throw new ExpressError(400,"Send valid data for listing");
+//         }
+//         let newListing = new Listing(listing);
+//         if(!newListing.title){
+//             throw new ExpressError(400,"Title is missing");
+//         }
+//         if(!newListing.description){
+//             throw new ExpressError(400,"description is missing");
+//         }
+//         if(!newListing.location){
+//             throw new ExpressError(400,"location is missing");
+//         }
+//         await newListing.save();
+//         res.redirect("/listings");
+// }));
+
+
+// Joi 
+// app.post("/listings",wrapAsync(async(req,res,next)=>{
+//     let result = lisingSchema.validate(req.body)
+//     // console.log(result)
+//     if(result.error){
+//         throw new ExpressError(400,result.error);
+//     }
+//     let listing = req.body.listing;
+//     let newListing = new Listing(listing);
+//     await newListing.save();
+//     res.redirect("/listings");
+// }));
+
 app.post("/listings", validateListing,wrapAsync(async(req,res,next)=>{
-    // let result = lisingSchema.validate(req.body)
-    // // console.log(result)
-    // if(result.error){
-    //     throw new ExpressError(400,result.error);
-    // }
     let listing = req.body.listing;
-    // if(!listing){
-    //     throw new ExpressError(400,"Send valid data for listing");
-    // }
     let newListing = new Listing(listing);
     await newListing.save();
     res.redirect("/listings");
@@ -147,5 +194,5 @@ app.use((err,req,res,next)=>{
     let {status=500,message="something went wrong"} = err;
     res.status(status).render("error.ejs",{message});
     // res.status(status).send(message);
-    // res.send("Something went wrong");
+    // res.send("Something went wrong"); //try-catch
 })
