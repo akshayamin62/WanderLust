@@ -9,7 +9,7 @@ const Review = require("./models/review.js");
 const ejsMate = require("ejs-mate");
 const wrapAsync = require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
-const {lisingSchema} = require("./schema.js");
+const {lisingSchema, reviewSchema} = require("./schema.js");
 const { error } = require("console");
 // const { title } = require("process");    
 
@@ -45,6 +45,16 @@ app.get("/",(req,res)=>{
 const validateListing = (req,res,next) => {
     let {error} = lisingSchema.validate(req.body)
     // console.log(error)
+    if(error){
+        let errMsg = error.details.map((el) => el.message).join(",")
+        throw new ExpressError(400,errMsg);
+    }else{
+        next();
+    }
+}
+
+const validateReview = (req,res,next) => {
+    let {error} = reviewSchema.validate(req.body)
     if(error){
         let errMsg = error.details.map((el) => el.message).join(",")
         throw new ExpressError(400,errMsg);
@@ -187,7 +197,7 @@ app.delete("/listings/:id/", wrapAsync(async (req,res)=>{
 }));
 
 //Reviews
-app.post("/listings/:id/reviews", async(req,res) => {
+app.post("/listings/:id/reviews", validateReview, wrapAsync(async(req,res) => {
     let listing = await Listing.findById(req.params.id);
     let newReview = new Review(req.body.review);
 
@@ -198,7 +208,7 @@ app.post("/listings/:id/reviews", async(req,res) => {
 
     // res.send("Review Saved");
     res.redirect(`/listings/${listing._id}`)
-})
+}));
 
 app.all("*",(req,res,next)=>{
     next(new ExpressError(404,"Page Not Found"));
