@@ -8,6 +8,21 @@ const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError.js");
 const listings = require("./routes/listing.js");
 const reviews = require("./routes/review.js");
+const session = require("express-session");
+// http://localhost:3000/listings
+
+const sessionOptions = {
+    secret : "mysupersecretcode",
+    resave : false,
+    saveUninitialized : true,
+    cookie: {
+        expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        httpOnly: true, //cross scripting attack
+    }
+}
+
+app.use(session(sessionOptions));
 
 app.use(express.urlencoded({extended:true})); 
 app.use(methodOverride("_method"));
