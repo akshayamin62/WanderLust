@@ -75,6 +75,16 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser())
 passport.deserializeUser(User.deserializeUser())
 
+app.get("/demouser", async(req,res)=> {
+    let fakeUser = new User({
+        email: "abc@gmail.com",
+        username: "abc",
+    });
+
+    const registeredUser = await User.register(fakeUser,"password");
+    res.send(registeredUser);
+})
+
 app.all("*",(req,res,next)=>{
     next(new ExpressError(404,"Page Not Found"));
 });

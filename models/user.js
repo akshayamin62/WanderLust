@@ -9,5 +9,6 @@ const userSchema = new Schema({
     }
 });
 
+// useses pbkdf2 hashingalgorithm
 userSchema.plugin(passportLocalMongoose);
 module.exports = mongoose.model("User",userSchema);
