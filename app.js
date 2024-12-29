@@ -10,6 +10,9 @@ const listings = require("./routes/listing.js");
 const reviews = require("./routes/review.js");
 const session = require("express-session");
 const flash = require("connect-flash");
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const User = require("./models/user.js")
 // http://localhost:3000/listings
 
 const sessionOptions = {
@@ -65,6 +68,12 @@ app.use((req,res,next)=>{
 app.use("/listings", listings);
 // Review Routes
 app.use("/listings/:id/reviews", reviews);
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser())
+passport.deserializeUser(User.deserializeUser())
 
 app.all("*",(req,res,next)=>{
     next(new ExpressError(404,"Page Not Found"));
