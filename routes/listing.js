@@ -4,6 +4,7 @@ const wrapAsync = require("../utils/wrapAsync.js");
 const ExpressError = require("../utils/ExpressError.js");
 const {lisingSchema, reviewSchema} = require("../schema.js");
 const Listing = require("../models/listing.js");
+const passport = require("passport");
 
 
 const validateListing = (req,res,next) => {
@@ -25,6 +26,10 @@ router.get("/", wrapAsync(async (req,res)=>{
 
 // Create Route 
 router.get("/new",(req,res)=>{
+    if(!req.isAuthenticated()){
+        req.flash("error", "You must be logged in to create Listing!");
+        return res.redirect("/login");
+    }
     res.render("listings/new.ejs");
 })
 

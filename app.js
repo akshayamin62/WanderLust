@@ -65,17 +65,18 @@ app.use((req,res,next)=>{
     next();
 })
 
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser())
+passport.deserializeUser(User.deserializeUser())
+
 // Listing Routes 
 app.use("/listings", listingRouter);
 // Review Routes
 app.use("/listings/:id/reviews", reviewRouter);
 app.use("/", userRouter);
 
-app.use(passport.initialize());
-app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser())
-passport.deserializeUser(User.deserializeUser())
 
 // app.get("/demouser", async(req,res)=> {
 //     let fakeUser = new User({
